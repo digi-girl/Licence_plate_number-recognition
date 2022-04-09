@@ -8,6 +8,7 @@ import requests
 import base64
 import json
 import base64
+import sqlite3
 from detect_car  import main
 """
 
@@ -135,7 +136,20 @@ while True:
             update_plate(filename)
             sg.Popup("license plate" , plate , "color " , Color , "year ",  year ,"brand " , Brand , keep_on_top=True)
 
-            print(plate)
+            print(type(plate))
+            mat=plate[0]
+            Col=Color[0]
+            Marque=Brand[0]
+            print(mat)
+            conn = sqlite3.connect('db.sqlite3')
+            cur = conn.cursor()
+            print("Connexion réussie à SQLite")
+            count = cur.execute("INSERT INTO mat_extr VALUES (NULL,?,?,?)",(mat,Col,Marque))
+            conn.commit()
+            print("Enregistrement inséré avec succès dans la table person")
+            cur.close()
+            conn.close()
+            print("Connexion SQLite est fermée")
         except Exception as E:
             print(f'** Error {E} **')
             pass        # something weird happened making the full filename
